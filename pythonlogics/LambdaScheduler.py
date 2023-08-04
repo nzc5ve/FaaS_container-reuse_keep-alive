@@ -551,7 +551,7 @@ class LambdaScheduler:
             else:
                 #Compute the waiting time
                 waiting_time = self.running_c[warm_containers_to_reuse[0]][1] - t
-                if (d.run_time - d.warm_time) < waiting_time: #If waiting time is longer
+                if self.checkfree(Container(d)) or ((d.run_time - d.warm_time) < waiting_time): #If waiting time is longer
                     #Launch a new container since we didnt find one for the metadata ...
                     c = self.cache_miss(d)
                     if c is None:
@@ -617,8 +617,8 @@ class LambdaScheduler:
                     mdict['exec'] = 0
                     rdict[k] = mdict
 
-                rdict[k]['cold'] = rdict[k]['cold'] + coldtime
-                rdict[k]['exec'] = rdict[k]['exec'] + exectime
+                rdict[k]['cold'] = rdict[k]['cold'] + float(coldtime)
+                rdict[k]['exec'] = rdict[k]['exec'] + float(exectime)
 
                 if evtype == "miss":
                     rdict[k]['misses'] = rdict[k]['misses'] + 1
